@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoute.js'
 import cors from 'cors'
 import categoryRoutes from './routes/categoryRoutes.js'
 import productRoutes from './routes/productRoutes.js'
+import cartRoutes from './routes/cartRoute.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use(morgan('dev'))
 app.use('/api/auth', authRoutes)
 app.use('/api/category', categoryRoutes)
 app.use('/api/product', productRoutes)
+app.use('/api/cart', cartRoutes)
 
 app.get("/", (req,res)=> {
     res.send("Fuck")

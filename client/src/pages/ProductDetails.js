@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
+import "../styles/productDetails.css"
+import e from 'cors'
+import { useAuth } from '../context/AuthContext'
 
 const ProductDetails = () => {
 
@@ -10,6 +13,32 @@ const ProductDetails = () => {
     const params = useParams()
     const [product,setProduct] = useState({})
     const [related, setRelated] = useState([])
+    const [auth,setAuth] = useAuth()
+
+    const addCart = async(e) => {
+      try {
+        // e.preventDefault();
+        console.log(product);
+        const { _id: productId, price } = product;
+  
+        if (auth?.user) {
+          const { data } = await axios.post(
+            "http://localhost:8000/api/cart/add-cart",
+            { productId, price }
+          );
+  
+          if (data.success) console.log(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    useEffect(()=>{
+      if(params?.slug) {
+       getProduct()
+      }
+  },[params?.slug])
 
     const getProduct = async()=> {
         try {
@@ -17,6 +46,7 @@ const ProductDetails = () => {
             console.log(data);
             setProduct(data?.product)
             getSimilar(data?.product._id, data?.product.category._id)
+          
         } catch (error) {
             console.log(error);
         }
@@ -31,21 +61,22 @@ const ProductDetails = () => {
         }
     }
 
-    useEffect(()=>{
-        // if(params?.slug)
-        getProduct()
-    },[params?.slug])
+   
 
   return (
     <Layout>
        <div className='container'>
-       <div className='row mt-2'>
+       <div className='row mt-2 product-details'>
             <div className='col-md-6'>
-            <img
+             {product._id && (
+              <img
                   src={`http://localhost:8000/api/product/product-photo/${product._id}`}
                   className="card-img-top"
                   alt={product.name}
+                  height="300"
+                  width="200"
                 />
+             )}
             </div>
             <div className='col-md-6 text-center'>
                 <h2>Product Details</h2>
@@ -53,7 +84,7 @@ const ProductDetails = () => {
                 <h4>{product.description}</h4>
                 <h4>{product.price}</h4>
                 <h4>{product.category?.name}</h4>
-                <button className="btn btn-secondary ms-1">
+                <button className="btn btn-secondary ms-1" onClick={()=>{addCart(e)}}>
                     ADD TO CART
                   </button>
             </div>
@@ -73,9 +104,9 @@ const ProductDetails = () => {
                   <p className="card-text">{p.description.substr(0, 60)} ...</p>
                   <p className="card-text">$ {p.price}</p>
                   <button className="btn btn-primary ms-1" onClick={()=> navigate(`/product/${p.slug}`)}>More Details</button>
-                  {/* <button className="btn btn-secondary ms-1"> */}
-                    {/* ADD TO CART
-                  </button> */}
+                  <button className="btn btn-secondary ms-1" onClick={()=>{addCart(e)}}> 
+                     ADD TO CART
+                  </button>
                 </div>
               </div>
             ))}

@@ -7,6 +7,7 @@ import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import "../styles/home.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,6 +22,25 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  const addCart = async (e, product) => {
+    try {
+      e.preventDefault();
+      console.log(product);
+      const { _id: productId, price } = product;
+
+      if (auth?.user) {
+        const { data } = await axios.post(
+          "http://localhost:8000/api/cart/add-cart",
+          { productId, price }
+        );
+
+        if (data.success) console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getTotalCount = async () => {
     try {
       const { data } = await axios.get(
@@ -33,7 +53,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (page == 1) return;
+    if (page == 6) return;
     loadMore();
   }, [page]);
 
@@ -173,12 +193,8 @@ const Home = () => {
                     More Details
                   </button>
                   <button
-                    className="btn btn-secondary ms-1"
-                    onClick={()=>{
-                      setCart([...cart,p])
-                      localStorage.setItem('cart', JSON.stringify([...cart, p]))
-                      toast.success('Add to Cart')
-                    }}
+                    className="btn btn-dark ms-1"
+                    onClick={(e) => addCart(e, p)}
                   >
                     ADD TO CART
                   </button>
@@ -193,7 +209,6 @@ const Home = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   setPage(page + 1);
-            
                 }}
               >
                 {loading ? "Loading ..." : "Load More"}

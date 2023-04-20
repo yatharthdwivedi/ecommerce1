@@ -233,8 +233,8 @@ export const productCount = async (req, res) => {
 
 export const productList = async (req, res) => {
   try {
-    const perPage = 1;
-    const page = req.params.page ? req.params.page : 1;
+    const perPage = 6;
+    const page = req.params.page ? req.params.page : 6;
     const products = await Product.find({})
       .select("-photo")
       .skip((page - 1) * perPage)

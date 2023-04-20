@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
-import useCategory from "../hooks/useCategory";
+// import useCategory from "../hooks/useCategory";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -28,20 +28,23 @@ const Categories = () => {
   }, []);
 
   return (
-    <Layout>
-      <h1>Categories</h1>
-      <div className="container">
-        <div className="row">
-          {categories?.map((c) => (
-            <div className="col-md-6 mt-5 mb-3 gx-3 gy-3">
-              <button className="btn btn-primary" key={c._id}>
-                <Link to={`/category/${c.slug}`} className="btn btn-primary">{c.name}</Link>
+    <Layout title={"All Categories"}>
+    <div className="container" style={{ marginTop: "100px" }}>
+      <div className="row container">
+        {categories.map((c) => (
+          <div className="col-md-4 mt-5 mb-3 gx-3 gy-3" key={c._id}>
+            <div className="card">
+              <button className="btn btn-secondary shadow" color="white">
+              <Link to={`/category/${c.slug}`}  className="btn cat-btn">
+                {c.name}
+              </Link>
               </button>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </Layout>
+    </div>
+  </Layout>
   );
 };
 
